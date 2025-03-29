@@ -1,0 +1,303 @@
+{
+    "检测回合1": {
+        "recognition": "OCR",
+        "expected": "回合1",
+        "roi": [
+            585,
+            28,
+            90,
+            65
+        ],
+        "next": [
+            "回合1行动1"
+        ],
+        "post_delay": 2000
+    },
+    "回合1行动1": {
+        "action": "Click",
+        "target": [
+            56,
+            960,
+            58,
+            62
+        ],
+        "post_delay": 3000,
+        "text_doc": "1普",
+        "next": [
+            "回合1行动2"
+        ]
+    },
+    "回合1行动2": {
+        "action": "Click",
+        "target": [
+            209,
+            1105,
+            30,
+            27
+        ],
+        "post_delay": 5000,
+        "text_doc": "2O",
+        "next": [
+            "回合1行动3"
+        ]
+    },
+    "回合1行动3": {
+        "action": "Click",
+        "target": [
+            357,
+            975,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "3普",
+        "next": [
+            "回合1行动4"
+        ]
+    },
+    "回合1行动4": {
+        "action": "Click",
+        "target": [
+            496,
+            980,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "4普",
+        "next": [
+            "回合1行动5"
+        ]
+    },
+    "回合1行动5": {
+        "action": "Click",
+        "target": [
+            646,
+            987,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "5普",
+        "next": [
+            "回合1行动6"
+        ]
+    },
+    "回合1行动6": {
+        "action": "Click",
+        "target": [
+            180,
+            959,
+            76,
+            83
+        ],
+        "post_delay": 3000,
+        "text_doc": "2普",
+        "next": [
+            "抄作业战斗胜利",
+            "检测回合2"
+        ]
+    },
+    "检测回合2": {
+        "recognition": "OCR",
+        "expected": "回合2",
+        "roi": [
+            585,
+            28,
+            90,
+            65
+        ],
+        "next": [
+            "回合2行动1"
+        ],
+        "post_delay": 2000
+    },
+    "回合2行动1": {
+        "action": "Click",
+        "target": [
+            56,
+            960,
+            58,
+            62
+        ],
+        "post_delay": 3000,
+        "text_doc": "1普",
+        "next": [
+            "回合2行动2"
+        ]
+    },
+    "回合2行动2": {
+        "action": "Click",
+        "target": [
+            180,
+            959,
+            76,
+            83
+        ],
+        "post_delay": 3000,
+        "text_doc": "2普",
+        "next": [
+            "回合2行动3"
+        ]
+    },
+    "回合2行动3": {
+        "action": "Click",
+        "target": [
+            357,
+            975,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "3普",
+        "next": [
+            "回合2行动4"
+        ]
+    },
+    "回合2行动4": {
+        "action": "Click",
+        "target": [
+            496,
+            980,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "4普",
+        "next": [
+            "回合2行动5"
+        ]
+    },
+    "回合2行动5": {
+        "action": "Click",
+        "target": [
+            646,
+            987,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "5普",
+        "next": [
+            "抄作业战斗胜利",
+            "检测回合3"
+        ]
+    },
+    "检测回合3": {
+        "recognition": "OCR",
+        "expected": "回合3",
+        "roi": [
+            585,
+            28,
+            90,
+            65
+        ],
+        "next": [
+            "回合3行动1"
+        ],
+        "post_delay": 2000
+    },
+    "回合3行动1": {
+        "action": "Click",
+        "target": [
+            56,
+            960,
+            58,
+            62
+        ],
+        "post_delay": 3000,
+        "text_doc": "1普",
+        "next": [
+            "回合3行动2"
+        ]
+    },
+    "回合3行动2": {
+        "action": "Click",
+        "target": [
+            180,
+            959,
+            76,
+            83
+        ],
+        "post_delay": 3000,
+        "text_doc": "2普",
+        "next": [
+            "回合3行动3"
+        ]
+    },
+    "回合3行动3": {
+        "action": "Click",
+        "target": [
+            357,
+            975,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "3普",
+        "next": [
+            "回合3行动4"
+        ]
+    },
+    "回合3行动4": {
+        "action": "Click",
+        "target": [
+            496,
+            980,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "4普",
+        "next": [
+            "回合3行动5"
+        ]
+    },
+    "回合3行动5": {
+        "action": "Click",
+        "target": [
+            646,
+            987,
+            10,
+            10
+        ],
+        "post_delay": 3000,
+        "text_doc": "5普"
+    },
+    "抄作业点左上角重开": {
+        "recognition": "TemplateMatch",
+        "template": "back.png",
+        "green_mask": true,
+        "threshold": 0.5,
+        "roi": [
+            6,
+            8,
+            123,
+            112
+        ],
+        "action": "Click",
+        "pre_delay": 2000,
+        "post_delay": 2000,
+        "next": [
+            "抄作业确定左上角重开",
+            "抄作业找到关卡-OCR"
+        ],
+        "timeout": 20000
+    },
+    "抄作业找到关卡-OCR": {
+        "recognition": "OCR",
+        "expected": "其他",
+        "roi": [
+            0,
+            249,
+            720,
+            1030
+        ],
+        "action": "Click",
+        "pre_delay": 2000,
+        "next": [
+            "抄作业战斗开始"
+        ],
+        "timeout": 20000
+    }
+}

@@ -1,0 +1,12 @@
+use_header: True # excel是否存在表头
+
+round_post_delay: 2000 # 回合识别延迟
+
+level_type: "其他" # 关卡类型：主线，白鹄，洞窟，活动有分级，其他
+cave_type: "左" # 洞窟类型：左，右
+level_recognition_name: "其他" # 活动有分级/其他-关卡序号/名
+difficulty: "" # 活动有分级-难度
+
+json_name: "actions" # 输出的作业名
+
+excel_name: "actions" # 如果使用图片转excel，生成的excel文件名
