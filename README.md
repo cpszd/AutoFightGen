@@ -1,2 +1,3 @@
 # AutoFightGen
-图片(?)表格转MaaYuan作业(半自动版）
+
+MaaYuan 作业生成：图片(?)表格转作业 json 文件
