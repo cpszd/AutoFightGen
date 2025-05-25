@@ -4,6 +4,8 @@ import pandas as pd
 import json
 import yaml
 
+from utils import read_excel_with_colors
+
 
 COLUMNS = ["1", "2", "3", "4", "5"]
 
@@ -345,5 +347,9 @@ if __name__ == "__main__":
         raise FileNotFoundError("outputs 文件夹中未找到任何excel文件")
 
     xlsx_path = os.path.join(outputs_dir, xlsx_files[0])
-    df = pd.read_excel(xlsx_path, header=0 if config["use_header"] else None)
+    # 读取excel
+    if config["use_color"] == True and config["color_type"] == "fill":
+        df = read_excel_with_colors(xlsx_path, config["use_header"])
+    else:
+        df = pd.read_excel(xlsx_path, header=0 if config["use_header"] else None)
     process_and_output(df, config)
