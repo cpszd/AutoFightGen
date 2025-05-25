@@ -1,18 +1,23 @@
-#表格转作业设置
-use_header: False # excel是否存在表头
-color_list: ["绿", "蓝"] # 颜色对应列表，例如 ["绿", "蓝"]，表示敌方1号位对应表格绿色，敌方2号位(右滑)对应表格蓝色
-round_post_delay: 2000 # 回合识别延迟
+#基础功能设置
 
-level_type: "白鹄" # 关卡类型：主线，白鹄，洞窟，活动有分级，其他
+#auto_fight_gen
+#1.输入输出设置
+use_header: False # 输入中excel是否存在表头，False表示第一行就是第一回合，True表示第二行是第一回合
+json_name: "actions" # 输出的作业名
+#2.关卡选择设置
+level_type: "其他" # 关卡类型：主线，白鹄，洞窟，活动有分级，其他
 cave_type: "左" # 洞窟类型：左，右
 level_recognition_name: "其他" # 活动有分级/其他-关卡序号/名
 difficulty: "" # 活动有分级-难度
+round_post_delay: 2000 # 回合识别延迟
 
-json_name: "actions" # 输出的作业名
-
-#表格识别设置
+#img2xls
 excel_name: "actions" # 如果使用图片转excel，生成的excel文件名
 use_team_img: True # 图片中是否使用队伍图片
 
-#通用设置
-use_color: True # 是否需要识别图片中的颜色[黑、灰、白、红、橙、黄、绿、青、蓝、紫等]
+#进阶功能设置
+#1.颜色功能设置，用颜色表示打几号位
+use_color: False # 是否需要用这个功能(img2xls会识别图片中每个格的颜色，将颜色+文本内容一起保存为表格；auto_fight_gen会自动根据配置的颜色进行左右侧目标选择)[黑、灰、白、红、橙、黄、绿、蓝、紫]
+#auto_fight_gen
+color_list: ["红", "绿"] # 颜色对应列表，例如 ["绿", "蓝"]，表示敌方1号位对应表格绿色，敌方2号位(右滑)对应表格蓝色
+color_type: "fill" # excel中如何表示颜色："text"表示用文字（如“红”、“橙”、“黄”）来表示颜色，"fill"表示直接填充对应的背景颜色
