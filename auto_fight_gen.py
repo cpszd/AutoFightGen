@@ -42,15 +42,93 @@ def process_and_output(df, config):
         )
         return action_templates.get(key)
 
+    def get_slide_operation(previous_color, target_color):
+
+        color_list = config["color_list"]
+
+        # 查找颜色在列表中的索引
+        previous_index = color_list.index(previous_color)
+        target_index = color_list.index(target_color)
+
+        # 计算顺时针和逆时针的距离
+        clockwise_distance = (target_index - previous_index) % len(color_list)
+        counterclockwise_distance = (previous_index - target_index) % len(color_list)
+
+        # 如果顺时针距离小于逆时针距离，选择右滑；否则选择左滑
+        if clockwise_distance <= counterclockwise_distance:
+            return ["右侧目标"] * clockwise_distance  # 右滑操作，重复输出距离次
+        else:
+            return ["左侧目标"] * counterclockwise_distance  # 左滑操作，重复输出距离次
+
+    def set_operation_action(action_op, idx, i, result_config, current_action_key):
+        if action_op != "未知":
+            i += 1
+            action_key = f"回合{idx}行动{i}"
+            if action_op == "左侧目标":
+                result_config[action_key] = {
+                    "text_doc": "左侧目标",
+                    "action": "Click",
+                    "target": [154, 648, 1, 1],
+                    "post_delay": 2000,
+                    "duration": 800,
+                }
+            elif action_op == "右侧目标":
+                result_config[action_key] = {
+                    "text_doc": "右侧目标",
+                    "action": "Click",
+                    "target": [603, 413, 18, 21],
+                    "post_delay": 2000,
+                    "duration": 800,
+                }
+            elif action_op == "检测橙星":
+                result_config[action_key] = {
+                    "text_doc": "检测橙星",
+                    "recognition": "ColorMatch",
+                    "roi": [77, 167, 70, 70],
+                    "method": 4,
+                    "upper": [255, 255, 205],
+                    "lower": [166, 140, 85],
+                    "count": 1,
+                    "order_by": "Score",
+                    "connected": True,
+                    "action": "Click",
+                    "pre_delay": 2000,
+                }
+                if current_action_key:
+                    result_config[current_action_key]["on_error"] = [
+                        "抄作业点左上角重开"
+                    ]
+                    result_config[current_action_key]["timeout"] = 200
+                else:
+                    result_config[f"检测回合{idx}"]["on_error"] = ["抄作业点左上角重开"]
+                    result_config[f"检测回合{idx}"]["timeout"] = 200
+
+            if current_action_key:
+                result_config[current_action_key]["next"] = [action_key]
+            current_action_key = action_key
+        else:
+            print(f"未知的操作符: {direction}")
+
+        return i, result_config, current_action_key
+
     # 解析行数据并生成行动顺序
     def parse_actions_for_row(row):
         action_order = {}
 
         for i, seq in enumerate(row):
             if isinstance(seq, str):
+                seq = (
+                    seq.replace("普攻", "普")
+                    .replace("技能", "大")
+                    .replace("防御", "防")
+                )
                 actions = re.findall(r"([\D]*)(\d)([\D])", seq)
                 for action in actions:
                     operations = action[0]  # 操作部分
+                    # 填补没有标颜色的操作符
+                    if config["use_color"] == True:
+                        if not operations or operations[0] not in config["color_list"]:
+                            operations = actions[0][0] + operations
                     number = int(action[1])  # 数字部分
                     symbol = action[2]  # 文本部分
                     action_type = action_map.get(
@@ -62,11 +140,14 @@ def process_and_output(df, config):
                         action_order[number] = {
                             "action": f"{operations}{COLUMNS[i]}{action_type}"  # 例如 '1大', '5普'
                         }
+                    else:
+                        print(f"未知的动作符号: {symbol}")
         return action_order
 
     result_config = {}
     max_round_num = len(df)
 
+    pre_color = ""  # 用于存储上一个颜色
     for idx, row in enumerate(df.values, start=1):
         # 生成回合信息
         result_config[f"检测回合{idx}"] = {
@@ -92,58 +173,39 @@ def process_and_output(df, config):
         i = 0
         # 生成并保存每个排序后的行动
         for _, action in sorted_actions:
-            match = re.search(r"([A-Za-z]+)(?=\d)", action["action"])
+            match = re.search(r"([\D]+)(?=\d)", action["action"])
             if match:
                 directions = match.group(0)
                 for direction in directions:
                     action_op = operation_map.get(direction, "未知")
-                    if action_op != "未知":
-                        i += 1
-                        action_key = f"回合{idx}行动{i}"
-                        if action_op == "左侧目标":
-                            result_config[action_key] = {
-                                "text_doc": "左侧目标",
-                                "action": "Click",
-                                "target": [154, 648, 1, 1],
-                                "post_delay": 2000,
-                                "duration": 800,
-                            }
-                        elif action_op == "右侧目标":
-                            result_config[action_key] = {
-                                "text_doc": "右侧目标",
-                                "action": "Click",
-                                "target": [603, 413, 18, 21],
-                                "post_delay": 2000,
-                                "duration": 800,
-                            }
-                        elif action_op == "检测橙星":
-                            result_config[action_key] = {
-                                "text_doc": "检测橙星",
-                                "recognition": "ColorMatch",
-                                "roi": [77, 167, 70, 70],
-                                "method": 4,
-                                "upper": [255, 255, 205],
-                                "lower": [166, 140, 85],
-                                "count": 1,
-                                "order_by": "Score",
-                                "connected": True,
-                                "action": "Click",
-                                "pre_delay": 2000,
-                            }
-                            if current_action_key:
-                                result_config[current_action_key]["on_error"] = [
-                                    "抄作业点左上角重开"
-                                ]
-                                result_config[current_action_key]["timeout"] = 200
+                    if config["use_color"] == True:
+                        if direction in config["color_list"]:
+                            if pre_color == direction or pre_color == "":
+                                pre_color = direction
+                                continue
                             else:
-                                result_config[f"检测回合{idx}"]["on_error"] = [
-                                    "抄作业点左上角重开"
-                                ]
-                                result_config[f"检测回合{idx}"]["timeout"] = 200
-
-                        if current_action_key:
-                            result_config[current_action_key]["next"] = [action_key]
-                        current_action_key = action_key
+                                slide_actions = get_slide_operation(
+                                    pre_color, direction
+                                )
+                                pre_color = direction
+                                for op in slide_actions:
+                                    i, result_config, current_action_key = (
+                                        set_operation_action(
+                                            op,
+                                            idx,
+                                            i,
+                                            result_config,
+                                            current_action_key,
+                                        )
+                                    )
+                        else:
+                            i, result_config, current_action_key = set_operation_action(
+                                action_op, idx, i, result_config, current_action_key
+                            )
+                    else:
+                        i, result_config, current_action_key = set_operation_action(
+                            action_op, idx, i, result_config, current_action_key
+                        )
 
             i += 1
 
