@@ -1,8 +1,16 @@
 import colorsys
+import os
+import sys
 
 import openpyxl
 import pandas as pd
 
+def resource_path(relative_path):
+    if getattr(sys, 'frozen', False):  # 如果是 PyInstaller 打包环境
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
 def rgb_to_named_color(color):
     """将 RGB 颜色转换为红、橙、黄、绿、青、蓝、紫等主要颜色"""

@@ -13,11 +13,11 @@ round_post_delay: 2000 # 回合识别延迟
 
 #img2xls
 excel_name: "actions" # 如果使用图片转excel，生成的excel文件名
-use_team_img: True # 图片中是否使用队伍图片
+use_team_img: False # 图片中是否使用队伍图片
 
 #进阶功能设置
 #1.颜色功能设置，用颜色表示打几号位
-use_color: False # 是否需要用这个功能(img2xls会识别图片中每个格的颜色，将颜色+文本内容一起保存为表格；auto_fight_gen会自动根据配置的颜色进行左右侧目标选择)[黑、灰、白、红、橙、黄、绿、蓝、紫]
+use_color: True # 是否需要用这个功能(img2xls会识别图片中每个格的颜色，将颜色+文本内容一起保存为表格；auto_fight_gen会自动根据配置的颜色进行左右侧目标选择)[黑、灰、白、红、橙、黄、绿、蓝、紫]
 #auto_fight_gen
 color_list: ["红", "绿"] # 颜色对应列表，例如 ["绿", "蓝"]，表示敌方1号位对应表格绿色，敌方2号位(右滑)对应表格蓝色
 color_type: "fill" # excel中如何表示颜色："text"表示用文字（如“红”、“橙”、“黄”）来表示颜色，"fill"表示直接填充对应的背景颜色

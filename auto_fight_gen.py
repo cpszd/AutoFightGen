@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import yaml
 
-from utils import read_excel_with_colors
+from utils import read_excel_with_colors, resource_path
 
 
 COLUMNS = ["1", "2", "3", "4", "5"]
@@ -17,17 +17,11 @@ def read_json(file_path):
 
 # 处理并输出JSON
 def process_and_output(df, config):
-    template_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "configs", "fight_action.json"
-    )
+    template_path = resource_path("configs/fight_action.json")
     action_templates = read_json(template_path)
-    actionmap_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "configs", "action_map.json"
-    )
+    actionmap_path = resource_path("configs/action_map.json")
     action_map = read_json(actionmap_path)
-    operationmap_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "configs", "operation_map.json"
-    )
+    operationmap_path= resource_path("configs/operation_map.json")
     operation_map = read_json(operationmap_path)
 
     def get_action(action_code):
@@ -234,11 +228,7 @@ def process_and_output(df, config):
 
     # 输出JSON并保存
     json_output = json.dumps(result_config, ensure_ascii=False, indent=4)
-    outputpath = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "outputs",
-        f"{config['json_name']}.json",
-    )
+    outputpath = resource_path(os.path.join("outputs", f"{config['json_name']}.json"))
     with open(outputpath, "w", encoding="utf-8") as f:
         f.write(json_output)
     print(f"JSON 文件已保存：{outputpath}")
@@ -333,14 +323,12 @@ def add_restart_info(result_config, config):
 
 # 主程序入口
 if __name__ == "__main__":
-    config_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "configs", "config.yaml"
-    )
+    config_path = resource_path("configs/config.yaml")
     with open(config_path, "r", encoding="utf-8") as file:
         config = yaml.safe_load(file)
 
     # 读取 outputs 文件夹下的第一个 .xlsx 文件
-    outputs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")
+    outputs_dir=resource_path("outputs")
     xlsx_files = [f for f in os.listdir(outputs_dir) if f.endswith(".xlsx")]
 
     if not xlsx_files:

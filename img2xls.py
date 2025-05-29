@@ -6,18 +6,18 @@
 import os
 import cv2
 import openpyxl
-from openpyxl.styles import PatternFill
+# from openpyxl.styles import PatternFill
 import pandas as pd
 from table_cls import TableCls
 from wired_table_rec.main import WiredTableInput, WiredTableRecognition
 from lineless_table_rec.main import LinelessTableInput, LinelessTableRecognition
 from rapidocr import RapidOCR
 import yaml
-from utils import rgb_to_named_color
+from utils import resource_path, rgb_to_named_color
 
-config_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "configs", "config.yaml"
-)
+config_path=resource_path("configs/config.yaml")
+
+
 with open(config_path, "r", encoding="utf-8") as file:
     config = yaml.safe_load(file)
 
@@ -159,7 +159,7 @@ def image_to_excel(img_path, output_path):
 
 
 def main():
-    img_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
+    img_dir = resource_path("images")
     img_files = [
         f for f in os.listdir(img_dir) if f.lower().endswith((".jpg", ".png", ".jpeg"))
     ]
@@ -168,11 +168,9 @@ def main():
         raise FileNotFoundError("outputs 文件夹中未找到任何 image 文件")
 
     img_path = os.path.join(img_dir, img_files[0])
-    output_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "outputs",
-        f"{config['excel_name']}.xlsx",
-    )
+
+    output_path = resource_path(os.path.join("outputs", f"{config['excel_name']}.xlsx"))
+
     image_to_excel(img_path, output_path)
 
 

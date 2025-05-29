@@ -1,2 +1,4 @@
 images/
 outputs/
+__pycache__/
+.gitignore
