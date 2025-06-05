@@ -82,6 +82,9 @@ def read_excel_with_colors(file_path, use_header=False):
         row_data = []
         for cell in row:
             text = cell.value  # 获取单元格文字
+            if text is None:
+                row_data.append("")
+                continue
             fill = cell.fill  # 获取单元格填充样式
             if hasattr(fill, "start_color") and fill.start_color.index != "00000000":
                 # 如果使用主题颜色
@@ -96,6 +99,7 @@ def read_excel_with_colors(file_path, use_header=False):
             else:
                 color = "白"  # 无背景颜色
             row_data.append(f"{color}{text}")  # 合并颜色和文字
-        data.append(row_data)
+        if any(cell != "" for cell in row_data):
+            data.append(row_data)
     df = pd.DataFrame(data)
     return df
