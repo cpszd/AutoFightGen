@@ -178,6 +178,7 @@ def process_and_output(df, config):
                         if direction in config["color_list"]:
                             if pre_color == direction or pre_color == "":
                                 pre_color = direction
+                                i+=1
                                 continue
                             else:
                                 slide_actions = get_slide_operation(
@@ -202,9 +203,8 @@ def process_and_output(df, config):
                         i, result_config, current_action_key = set_operation_action(
                             action_op, idx, i, result_config, current_action_key
                         )
-
             i += 1
-
+            
             action_config = get_action(action["action"][-2:])
             if action_config:
                 action_key = f"回合{idx}行动{i}"
