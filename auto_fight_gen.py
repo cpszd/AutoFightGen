@@ -166,19 +166,22 @@ def process_and_output(df, config):
 
         total_actions = sum(len(action["action"]) - 1 for _, action in sorted_actions)
 
+        #用于记录回合{idx}行动{i}
         i = 0
+        #用于判定total_actions,暂时这么修吧
+        cur_id=0
         # 生成并保存每个排序后的行动
         for _, action in sorted_actions:
             match = re.search(r"([\D]+)(?=\d)", action["action"])
             if match:
                 directions = match.group(0)
                 for direction in directions:
+                    cur_id += 1
                     action_op = operation_map.get(direction, "未知")
                     if config["use_color"] == True:
                         if direction in config["color_list"]:
                             if pre_color == direction or pre_color == "":
                                 pre_color = direction
-                                i+=1
                                 continue
                             else:
                                 slide_actions = get_slide_operation(
@@ -204,6 +207,7 @@ def process_and_output(df, config):
                             action_op, idx, i, result_config, current_action_key
                         )
             i += 1
+            cur_id += 1
             
             action_config = get_action(action["action"][-2:])
             if action_config:
@@ -217,7 +221,7 @@ def process_and_output(df, config):
                 current_action_key = action_key
 
                 # 如果是当前回合的最后一个动作，设置next指向下一回合
-                if i == total_actions and int(idx) < max_round_num:
+                if cur_id == total_actions and int(idx) < max_round_num:
                     result_config[action_key]["next"] = [
                         "抄作业战斗胜利",
                         f"检测回合{int(idx)+1}",
