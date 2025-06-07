@@ -8,9 +8,8 @@ from zhipuai import ZhipuAI
 from utils import resource_path
 
 
-def image_to_text(img_path,api_key=None, model="glm-4v-flash"):
-    with open(img_path, 'rb') as f:
-        img_base64 = base64.b64encode(f.read()).decode()
+def image_to_text(img_url,api_key=None, model="glm-4v-flash"):
+    
 
     client = ZhipuAI(api_key=api_key)
     response = client.chat.completions.create(
@@ -18,24 +17,33 @@ def image_to_text(img_path,api_key=None, model="glm-4v-flash"):
         messages=[{
             "role": "user",
             "content": [
-                {"type": "image_url", "image_url": {"url": img_base64}},
-                {"type": "text", "text": "帮我把这个图片转为表格,输出html格式"}
+                {"type": "image_url", "image_url": {"url": img_url}},
+                {"type": "text", "text": "帮我把这个图片转为表格,输出Markdown格式"}
             ]
-        }]
+        }],
+        
     )
+    print(response.choices[0].message.content
+)
     return response.choices[0].message.content
 
 
-def text_to_excel(content, output_path):
-    match = re.search(r"<table.*?>.*?</table>", content, re.DOTALL)
-    if not match:
-        print("未能提取 HTML 表格。")
+def markdown_table_to_excel(md_content, output_path):
+    # 提取 Markdown 表格内容（以|开头的行）
+    lines = [line.strip() for line in md_content.strip().split('\n') if line.strip().startswith('|')]
+    if len(lines) < 3:
+        print("Markdown表格格式异常或行数不足")
         return
 
-    df = pd.read_html(StringIO(match.group(0)))[0]
+    # 移除表头分隔行（例如|---|---|）
+    lines = [line for line in lines if not re.match(r'^\|\s*[-:]+\s*(\|\s*[-:]+\s*)*\|$', line)]
+
+    # 转成以逗号分隔的CSV格式文本，方便用pandas读取
+    csv_str = '\n'.join([','.join([cell.strip() for cell in re.split(r'\s*\|\s*', line.strip('|'))]) for line in lines])
+    df = pd.read_csv(StringIO(csv_str))
+
+    # 去除字符串内空格
     df = df.applymap(lambda x: str(x).replace(' ', '') if isinstance(x, str) else x)
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = [col[-1] for col in df.columns]
 
     df.to_excel(output_path, index=False)
     print(f"Excel 保存成功: {output_path}")
@@ -45,17 +53,10 @@ def main():
     with open(resource_path("configs/config.yaml"), encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
-    img_dir = resource_path("images")
-    img_files = [f for f in os.listdir(img_dir) if f.lower().endswith((".jpg", ".png", ".jpeg"))]
-
-    if not img_files:
-        raise FileNotFoundError("images 文件夹中未找到任何图片文件")
-
-    img_path = os.path.join(img_dir, img_files[0])
+    img_url=config['img_url']
     output_path = resource_path(os.path.join("outputs", f"{config['excel_name']}.xlsx"))
-
-    content = image_to_text(img_path,config['api_key'], config['model'])
-    text_to_excel(content, output_path)
+    content = image_to_text(img_url,config['api_key'], config['model'])
+    markdown_table_to_excel(content, output_path)
 
 
 if __name__ == "__main__":
